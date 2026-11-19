@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block title %}Sign in | Libra{% endblock %}{% block content %}
+<div class="auth-wrap"><div class="auth-card"><div class="auth-logo">✦ libra.</div><h1>Welcome back</h1><p class="subtext">Sign in to your library account</p>
+<form method="post">{% csrf_token %}{% if form.errors %}<div class="alert alert-error">Your username or password is incorrect.</div>{% endif %}
+<div class="field"><label>Username</label>{{ form.username }}</div><div class="field"><label>Password</label>{{ form.password }}</div>
+<button class="btn" style="width:100%">Sign in →</button></form>
+<div class="auth-links"><a href="{% url 'password_reset' %}">Forgot password?</a> · New here? <a href="{% url 'register' %}">Create account</a></div>
+</div></div>{% endblock %}

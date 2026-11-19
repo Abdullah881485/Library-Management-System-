@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Create account | Libra{% endblock %}{% block content %}
+<div class="auth-wrap"><div class="auth-card"><div class="auth-logo">✦ libra.</div><h1>Create your account</h1><p class="subtext">Join your library community</p>
+<form method="post">{% csrf_token %}{{ form.non_field_errors }}
+{% for field in form %}<div class="field"><label>{{ field.label }}</label>{{ field }}{{ field.errors }}{% if field.help_text %}<div class="helptext">{{ field.help_text|safe }}</div>{% endif %}</div>{% endfor %}
+<button class="btn" style="width:100%">Create account →</button></form>
+<div class="auth-links">Already registered? <a href="{% url 'login' %}">Sign in</a></div></div></div>{% endblock %}

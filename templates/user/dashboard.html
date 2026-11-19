@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block page_heading %}My dashboard{% endblock %}{% block content %}
+<h1 class="page-title">Hello, {{ user.first_name|default:user.username }} 👋</h1><p class="subtext">Your personal library at a glance.</p>
+<div class="profile-id">Your Library ID: <strong>{{ user.library_id }}</strong></div>
+<div class="grid stats"><div class="stat-card"><small>Books in library</small><strong>{{ book_count }}</strong></div><div class="stat-card"><small>Currently borrowed</small><strong>{{ active_count }}</strong></div></div>
+<div class="panel"><div class="panel-head"><h3>My currently borrowed books</h3><a class="btn btn-light btn-small" href="{% url 'my_loans' %}">View history</a></div><div class="table-wrap"><table><tr><th>Book</th><th>Issued</th><th>Return by</th><th>Status</th></tr>{% for loan in active_loans %}<tr><td><strong>{{ loan.book.title }}</strong></td><td>{{ loan.issued_at|date:"d M Y" }}</td><td>{{ loan.due_at|date:"d M Y" }}</td><td>{% if loan.is_overdue %}<span class="badge badge-red">Overdue</span>{% else %}<span class="badge badge-warn">Issued</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="4" class="empty">You don't have any borrowed books right now. <a href="{% url 'book_list' %}">Browse books</a>.</td></tr>{% endfor %}</table></div></div>
+<a class="btn" href="{% url 'book_list' %}">Explore library →</a>{% endblock %}

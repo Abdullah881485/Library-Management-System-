@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block page_heading %}Admin overview{% endblock %}{% block content %}
+<h1 class="page-title">Good day, {{ user.first_name|default:user.username }} 👋</h1><p class="subtext">Here’s what’s happening in your library today.</p>
+<div class="grid stats">
+<div class="stat-card"><span class="stat-icon">▤</span><small>Total books</small><strong>{{ book_count }}</strong></div>
+<div class="stat-card"><span class="stat-icon">♙</span><small>Registered members</small><strong>{{ user_count }}</strong></div>
+<div class="stat-card"><span class="stat-icon">⇄</span><small>Currently issued</small><strong>{{ active_count }}</strong></div>
+<div class="stat-card"><span class="stat-icon">◷</span><small>Overdue books</small><strong>{{ overdue_count }}</strong></div></div>
+<div class="panel"><div class="panel-head"><h3>Recent book activity</h3><a class="btn btn-light btn-small" href="{% url 'issue_book' %}">Manage issues</a></div>
+<div class="table-wrap"><table><tr><th>Member</th><th>Book</th><th>Issued</th><th>Due date</th><th>Status</th></tr>
+{% for loan in recent_loans %}<tr><td><strong>{{ loan.user.get_full_name|default:loan.user.username }}</strong><br><small>{{ loan.user.library_id }}</small></td><td>{{ loan.book.title }}</td><td>{{ loan.issued_at|date:"d M Y" }}</td><td>{{ loan.due_at|date:"d M Y" }}</td><td>{% if loan.is_overdue %}<span class="badge badge-red">Overdue</span>{% elif loan.status == "RETURNED" %}<span class="badge">Returned</span>{% else %}<span class="badge badge-warn">Issued</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="5" class="empty">No book activity yet.</td></tr>{% endfor %}</table></div></div>
+<div class="panel"><div class="panel-head"><h3>Low stock alert</h3><a href="{% url 'manage_books' %}" class="btn btn-light btn-small">View inventory</a></div>
+<div class="table-wrap"><table><tr><th>Book</th><th>Category</th><th>Available</th></tr>{% for book in low_stock %}<tr><td>{{ book.title }}</td><td>{{ book.category.name }}</td><td><span class="badge badge-warn">{{ book.available_copies }} left</span></td></tr>{% empty %}<tr><td colspan="3" class="empty">No low-stock books.</td></tr>{% endfor %}</table></div></div>{% endblock %}

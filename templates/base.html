@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Libra — Library Management{% endblock %}</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+<div class="app-shell">
+  {% if user.is_authenticated %}
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'dashboard' %}"><span class="brand-mark">L</span><span>libra<span class="brand-dot">.</span><small>LIBRARY PORTAL</small></span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav-link" href="{% url 'dashboard' %}"><span>▦</span> Dashboard</a>
+    <a class="nav-link" href="{% url 'book_list' %}"><span>▤</span> Browse books</a>
+    {% if user.is_library_admin %}
+      <div class="nav-label">MANAGEMENT</div>
+      <a class="nav-link" href="{% url 'manage_books' %}"><span>▣</span> Manage books</a>
+      <a class="nav-link" href="{% url 'categories' %}"><span>◈</span> Categories</a>
+      <a class="nav-link" href="{% url 'authors' %}"><span>✎</span> Authors</a>
+      <a class="nav-link" href="{% url 'issue_book' %}"><span>⇄</span> Issue & return</a>
+      <a class="nav-link" href="{% url 'users' %}"><span>♙</span> Members</a>
+    {% else %}
+      <div class="nav-label">MY LIBRARY</div>
+      <a class="nav-link" href="{% url 'my_loans' %}"><span>▧</span> My borrowed books</a>
+    {% endif %}
+    <div class="sidebar-bottom">
+      <div class="help-card"><strong>Need a hand?</strong><p>Ask your library administrator for help.</p></div>
+      <a class="nav-link" href="{% url 'profile' %}"><span>⚙</span> My profile</a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="nav-link logout-btn"><span>↪</span> Sign out</button></form>
+    </div>
+  </aside>
+  {% endif %}
+  <main class="main-area {% if not user.is_authenticated %}main-auth{% endif %}">
+    {% if user.is_authenticated %}
+    <header class="topbar">
+      <div><span class="eyebrow">LIBRARY MANAGEMENT SYSTEM</span><div class="topbar-title">{% block page_heading %}Workspace{% endblock %}</div></div>
+      <div class="top-user"><div class="avatar">{{ user.first_name|default:user.username|slice:":1"|upper }}</div><div><strong>{{ user.get_full_name|default:user.username }}</strong><small>{% if user.is_library_admin %}Administrator{% else %}Library member{% endif %}</small></div></div>
+    </header>
+    {% endif %}
+    <section class="page-content">
+      {% for message in messages %}<div class="alert alert-{{ message.tags }}">{{ message }}</div>{% endfor %}
+      {% block content %}{% endblock %}
+    </section>
+    <footer class="footer">© {% now "Y" %} Libra Library Portal <span>Read. Learn. Grow.</span></footer>
+  </main>
+</div>
+</body>
+</html>
